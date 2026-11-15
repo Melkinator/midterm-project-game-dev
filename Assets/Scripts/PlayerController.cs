@@ -1,12 +1,12 @@
 
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 6f;
+    [SerializeField] private float rotationSpeed = 12f;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce = 7f;
@@ -20,17 +20,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 1.1f;
     [SerializeField] private LayerMask groundLayer;
 
-    [Header("Lab wiring")]
+    [Header("Camera")]
     [SerializeField] private Transform cameraTransform;
 
     private Rigidbody rb;
+
+    private Vector2 moveInput;
     private bool isGrounded;
     private bool isDashing;
 
     private float nextDashTime;
-
-    private Vector3 dashDirection;
-    private Vector3 cameraOffset = new Vector3(0f, 5f, -7f);
 
     void Awake()
     {
@@ -39,31 +38,90 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("[PlayerController] Ready.");
+        Debug.Log("[PlayerController] Ready. Collect all orbs to win.");
     }
 
     void Update()
     {
-        HandleMovement();
+        // Read player input
+        moveInput = new Vector2(
+            Input.GetAxisRaw("Horizontal"),
+            Input.GetAxisRaw("Vertical")
+        ).normalized;
+
+        CheckGround();
+
+        HandleJump();
         HandleDashInput();
+        HandleRotation();
+    }
+
+    void FixedUpdate()
+    {
+        if (!isDashing)
+        {
+            HandleMovement();
+        }
+    }
+
+    private Vector3 GetCameraDirection()
+    {
+        // Get camera forward and right directions
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
+
+        // Ignore vertical camera angle
+        forward.y = 0f;
+        right.y = 0f;
+
+        forward.Normalize();
+        right.Normalize();
+
+        // Calculate movement relative to camera
+        return (forward * moveInput.y + right * moveInput.x).normalized;
     }
 
     private void HandleMovement()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        Vector3 movement = GetCameraDirection();
 
-        Vector3 movement = new Vector3(h, 0f, v).normalized;
+        rb.linearVelocity = new Vector3(
+            movement.x * moveSpeed,
+            rb.linearVelocity.y,
+            movement.z * moveSpeed
+        );
+    }
 
-        // Ground check
+    private void HandleRotation()
+    {
+        if (isDashing) return;
+
+        Vector3 movement = GetCameraDirection();
+
+        if (movement.magnitude > 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
+    }
+
+    private void CheckGround()
+    {
         isGrounded = Physics.Raycast(
             transform.position,
             Vector3.down,
             groundCheckDistance,
             groundLayer
         );
+    }
 
-        // Jump
+    private void HandleJump()
+    {
         if (Input.GetButtonDown("Jump") && isGrounded && !isDashing)
         {
             rb.linearVelocity = new Vector3(
@@ -72,30 +130,25 @@ public class PlayerController : MonoBehaviour
                 rb.linearVelocity.z
             );
 
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-
-        // Normal movement (disabled while dashing)
-        if (!isDashing)
-        {
-            transform.Translate(
-                movement * moveSpeed * Time.deltaTime,
-                Space.World
+            rb.AddForce(
+                Vector3.up * jumpForce,
+                ForceMode.Impulse
             );
         }
     }
 
     private void HandleDashInput()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift)&&Time.time >= nextDashTime&&!isDashing)
+        if (Input.GetKeyDown(KeyCode.LeftShift) &&
+            Time.time >= nextDashTime &&
+            !isDashing)
         {
-            float h = Input.GetAxisRaw("Horizontal");
-            float v = Input.GetAxisRaw("Vertical");
+            Vector3 direction = GetCameraDirection();
 
-            Vector3 direction = new Vector3(h, 0f, v).normalized;
-
-            // If no direction is pressed, dash forward
-            if (direction == Vector3.zero) {direction = transform.forward;}
+            if (direction == Vector3.zero)
+            {
+                direction = transform.forward;
+            }
 
             StartCoroutine(Dash(direction));
 
@@ -107,27 +160,19 @@ public class PlayerController : MonoBehaviour
     {
         isDashing = true;
 
-        dashDirection = direction;
-
         float dashEndTime = Time.time + dashDuration;
 
         while (Time.time < dashEndTime)
         {
-            rb.linearVelocity = new Vector3(dashDirection.x * dashSpeed, rb.linearVelocity.y, dashDirection.z * dashSpeed);
+            rb.linearVelocity = new Vector3(
+                direction.x * dashSpeed,
+                rb.linearVelocity.y,
+                direction.z * dashSpeed
+            );
 
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         isDashing = false;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-
-        Gizmos.DrawLine(
-            transform.position,
-            transform.position + Vector3.down * groundCheckDistance
-        );
     }
 }

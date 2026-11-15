@@ -65,6 +65,10 @@ public class PauseMenu : MonoBehaviour
 
         Application.Quit();
 
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+
         Debug.Log("Game Exited");
     }
 }
