@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("[PlayerController] Ready. Collect all orbs to win.");
+        Debug.Log("[PlayerController] ready.");
     }
 
     void Update()

@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "midterm-project-game-dev.slnx"
+    "dotnet.defaultSolution": "midterm-project.slnx"
 }
