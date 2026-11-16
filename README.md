@@ -42,7 +42,7 @@ Navigate through the 3D platformer course from the **Start** trigger to the **Fi
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Melkinator/midterm-project-game-dev.git
    cd midterm-project-game-dev
    ```
 2. **Open in Unity:**
@@ -55,13 +55,28 @@ Navigate through the 3D platformer course from the **Start** trigger to the **Fi
 
 ---
 
-## 4. Playable Build (Standalone — Windows x86_64)
+## Submission
+
+Everything for submission is in one Google Drive folder:
+
+**➡️ [Google Drive — Submission Folder](https://drive.google.com/drive/folders/1-6zwa2rdH5C2xfD1VT1F1FbYzT6tZO6Q)**
+
+The folder contains:
+
+| Item | File |
+| :--- | :--- |
+| Playable build (Windows x86_64) | `midterm-project-win64.zip` — extract and run `midterm-project.exe` |
+| Gameplay video | Screen recording of a full run from Start to Finish |
+
+> Set the folder sharing to **Anyone with the link → Viewer** so graders can download it.
+
+---
+
+## Playable Build (Standalone — Windows x86_64)
 
 A standalone **Windows x86_64** build is submitted for this project. It runs on its own and **does not require the Unity Editor** to be installed or opened.
 
-**Download:** [midterm-project-win64.zip](https://github.com/OWNER/REPO/releases/latest/download/midterm-project-win64.zip)
-
-> Replace `OWNER/REPO` with the GitHub repository path once the build is attached to a Release.
+**Download:** see the [Submission folder](https://drive.google.com/drive/folders/1-6zwa2rdH5C2xfD1VT1F1FbYzT6tZO6Q) above.
 
 **How to play:**
 
@@ -85,7 +100,7 @@ A standalone **Windows x86_64** build is submitted for this project. It runs on 
    - `Platformer Starter Pack_URP/Scene/GameOver` (index 1)
 3. Select **Windows, Mac, Linux > Windows x86_64** and click **Build**.
 
-> `Build/` and `Builds/` are git-ignored, so the compiled build is distributed through GitHub Releases rather than committed to the repository.
+> `Build/` and `Builds/` are git-ignored, so the compiled build is not in this repository — it is submitted through Google Drive.
 
 ---
 
@@ -101,17 +116,18 @@ A standalone **Windows x86_64** build is submitted for this project. It runs on 
 
 ## Team Members & Contributions
 
-> *Update with your team members and their specific contributions:*
-
-- **[Team Member 1]** — Level design, map layout, hazards & obstacles
-- **[Team Member 2]** — Player controller, camera follow, game controller, pause menu
+| Member | Role | Contributions |
+| :--- | :--- | :--- |
+| **Nhean Omra** | Project Lead / Level Design | Planned the game concept and course structure (Start → Finish, timer-based run). Designed the `DemoScene` level layout — platforms, jumps, start/finish gates, and prop placement. Wrote the project documentation, controls reference, and standalone build instructions. |
+| **Ngoun Sovichet** | Gameplay Programming | Project setup (URP template, repo, `.gitignore`); map cleanup and colliders; `PlayerController` (camera-relative movement, jump, dash); `CameraFollow` (third-person orbit); `PauseMenu`; `GameController` (Start/Finish timer, win screen); `Hazard` tag setup; final playtest tuning (`jumpForce`, `dashSpeed`, kinematic platforms, `MeshCollider`). |
+| **Bouy Dara** | Hazards & Scene Setup | `PlayerDeath` and `GameOverMenu`; `GameOver` scene; `SpinObject`, `RollBackAndForth`, and `SwingPendulum` hazards; moving-platform animations and animator controllers; added hazards to the level and registered scenes in Build Settings. |
+| **Chey Naryvaty** | Project Management | Coordinated the team and tracked tasks across the midterm timeline — assigned work items, kept the commit plan on schedule, and reviewed teammates' changes before submission. Helped scope the project to what could be finished in time and compiled the final submission checklist. |
 
 ---
 
-## Asset & Tutorial References
+## Asset 
 
 - **Assets:**
   - [POLY STYLE - Platformer Starter Pack (URP)](Assets/POLY%20STYLE%20-%20Platformer%20Starter%20Pack/Readme.txt)
   - Unity **TextMesh Pro**
-- **Tutorials / References:**
-  - *Add any Unity or YouTube tutorials referenced during development here.*
+
